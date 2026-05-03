@@ -848,7 +848,9 @@ export function StepCard({ step, partNumber, index, isAdvanced = false }: StepCa
       <Card className="group/step relative overflow-hidden border-border/80 py-0 transition-all duration-300 hover:border-[var(--accent-edge)] hover:shadow-[var(--elev-2)]">
         {/* Step Header — slim, with numbered badge */}
         <div className="relative flex items-center gap-3 border-b border-border/70 bg-gradient-to-b from-muted/40 to-muted/10 px-5 py-3 md:px-6">
-          <div className="stroke-conic flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/80 bg-[var(--accent-soft)]" data-accent="electric">
+          {/* Badge inherits --accent-color from the nearest [data-accent] ancestor
+              (electric on Foundation, violet on Advanced, emerald on Terminal). */}
+          <div className="stroke-conic flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/80 bg-[var(--accent-soft)]">
             <span className="numeric font-heading text-xs font-bold text-[var(--accent-color)]">
               {String(index + 1).padStart(2, '0')}
             </span>

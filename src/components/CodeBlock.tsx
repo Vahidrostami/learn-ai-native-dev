@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ensureLanguage, highlight, normalizeLang } from '@/lib/shiki'
 import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
@@ -19,6 +19,7 @@ interface CodeBlockProps {
 export function CodeBlock({ code, language, className }: CodeBlockProps) {
   const { theme } = useTheme()
   const [html, setHtml] = useState<string | null>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -27,7 +28,11 @@ export function CodeBlock({ code, language, className }: CodeBlockProps) {
       setHtml(null)
       return
     }
-    const isDark = theme !== 'light'
+    // Terminal track is dark-only — force a dark Shiki theme there so the
+    // inline `background-color:#ffffff` from the light theme doesn't leak
+    // into the green/black palette when the site theme is "light".
+    const inTerminalTheme = !!wrapperRef.current?.closest('.terminal-theme')
+    const isDark = inTerminalTheme || theme !== 'light'
     ;(async () => {
       await ensureLanguage(lang)
       const out = await highlight(code, lang, isDark)
@@ -39,7 +44,7 @@ export function CodeBlock({ code, language, className }: CodeBlockProps) {
   }, [code, language, theme])
 
   return (
-    <div className={cn('relative my-4', className)}>
+    <div ref={wrapperRef} className={cn('relative my-4', className)}>
       {language && (
         <div className="absolute right-2.5 top-1.5 z-10 rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-muted-foreground">
           {language}

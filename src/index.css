@@ -623,6 +623,28 @@ body > * { position: relative; z-index: 2; }
   --accent-foreground: #c4cdc8 !important;
   --input: rgba(57, 232, 117, 0.1) !important;
   --ring: rgba(57, 232, 117, 0.4) !important;
+  /* Tailwind v4's @theme generates --color-muted: var(--muted) at :root, so
+     the references resolve at root and ignore the per-element --muted
+     override above. Re-bind every Tailwind color token here so utilities
+     like `bg-muted/40`, `bg-card`, `text-foreground` resolve to the
+     terminal palette inside this subtree. */
+  --color-background: #0b0d0c !important;
+  --color-foreground: #c4cdc8 !important;
+  --color-card: #141816 !important;
+  --color-card-foreground: #c4cdc8 !important;
+  --color-popover: #141816 !important;
+  --color-popover-foreground: #c4cdc8 !important;
+  --color-muted: #181c1a !important;
+  --color-muted-foreground: #7d9185 !important;
+  --color-border: rgba(57, 232, 117, 0.15) !important;
+  --color-primary: #39e875 !important;
+  --color-primary-foreground: #0b0d0c !important;
+  --color-secondary: #181c1a !important;
+  --color-secondary-foreground: #c4cdc8 !important;
+  --color-accent: rgba(57, 232, 117, 0.08) !important;
+  --color-accent-foreground: #c4cdc8 !important;
+  --color-input: rgba(57, 232, 117, 0.1) !important;
+  --color-ring: rgba(57, 232, 117, 0.4) !important;
   color-scheme: dark;
   color: #c4cdc8 !important;
 }
@@ -659,9 +681,13 @@ body > * { position: relative; z-index: 2; }
   border-color: rgba(57, 232, 117, 0.15) !important;
 }
 
-/* Card header area — slightly darker than body */
+/* Card header area — slightly darker than body.
+   Also kill Tailwind gradient utilities (bg-gradient-to-b from-muted/40 …)
+   that StepCard / PromptBox apply, otherwise a gray fade washes out the
+   step title against the green terminal theme. */
 .terminal-theme [data-slot="card"] > .border-b {
   background-color: #111412 !important;
+  background-image: none !important;
   border-color: rgba(57, 232, 117, 0.1) !important;
 }
 
@@ -797,10 +823,17 @@ body > * { position: relative; z-index: 2; }
   border-color: rgba(57, 232, 117, 0.18) !important;
 }
 
-/* PromptBox header (bg-muted/50) */
+/* PromptBox header (bg-gradient-to-b from-muted/70 …) — kill the gradient. */
 .terminal-theme [data-slot="card"] [data-slot="card"] > .border-b {
   background-color: #141816 !important;
+  background-image: none !important;
   border-color: rgba(57, 232, 117, 0.12) !important;
+}
+
+/* PromptBox tabs row & meta-prompt note (bg-muted/20, bg-violet-500/5) */
+.terminal-theme [data-slot="card"] [data-slot="card"] .bg-muted\/20,
+.terminal-theme [data-slot="card"] [data-slot="card"] .bg-violet-500\/5 {
+  background-color: #141816 !important;
 }
 
 /* PromptBox prompt badge */
